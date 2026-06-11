@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function App() {
   const [cidade, setCidade] = useState("");
@@ -23,22 +23,72 @@ function App() {
 
       if (resposta.ok) {
         setClima(dados);
+        localStorage.setItem("ultimaCidade", dados.name);
       } else if (resposta.status === 404) {
         setErro("Cidade não encontrada. Verifique a ortografia!");
       } else {
         setErro("Ops! Ocorreu um erro ao buscar os dados.");
       }
-    } catch (err) {
-      console.error("Erro na requisição:", err);
+    } catch (erro) {
+      console.error("Erro na requisição:", erro);
       setErro("Não foi possível conectar ao serviço de clima.");
     } finally {
       setCarregando(false);
     }
   };
 
+  useEffect(() => {
+    const cidadeSalva = localStorage.getItem("ultimaCidade");
+
+    if (cidadeSalva) {
+      const buscarCidadeAutomatica = async () => {
+        setCarregando(true);
+        const apiKey = "66f123515e2cb4ac359ce3ba0cb53cc0";
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${cidadeSalva}&appid=${apiKey}&units=metric&lang=pt_br`;
+
+        try {
+          const resposta = await fetch(url);
+          const dados = await resposta.json();
+          if (resposta.ok) {
+            setClima(dados);
+            setCidade(cidadeSalva);
+          }
+        } catch (err) {
+          console.error(err);
+        } finally {
+          setCarregando(false);
+        }
+      };
+
+      buscarCidadeAutomatica();
+    }
+  }, []);
+
+  let fundoDinamico = "bg-gradient-to-br from-slate-100 to-blue-50";
+  let corDoTitulo = "text-slate-800";
+
+  if (clima) {
+    const temp = clima.main?.temp;
+
+    if (temp <= 16) {
+      fundoDinamico = "bg-gradient-to-br from-slate-700 to-slate-900";
+      corDoTitulo = "text-white";
+    } else if (temp > 16 && temp <= 24) {
+      fundoDinamico =
+        "bg-gradient-to-br from-slate-200 via-slate-100 to-blue-100";
+      corDoTitulo = "text-slate-800";
+    } else {
+      fundoDinamico = "bg-gradient-to-br from-orange-50 to-amber-100";
+      corDoTitulo = "text-slate-800";
+    }
+  }
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center p-6 font-sans">
-      <h1 className="text-4xl font-extrabold text-slate-800 mb-6 tracking-tight">
+    <div
+      className={`min-h-screen ${fundoDinamico} flex flex-col items-center justify-center p-6 font-sans transition-all duration-500`}
+    >
+      <h1
+        className={`text-4xl font-extrabold ${corDoTitulo} mb-6 tracking-tight transition-colors duration-500`}
+      >
         Descubra o Clima
       </h1>
 
@@ -79,6 +129,15 @@ function App() {
           <h2 className="text-2xl font-bold text-slate-800">
             {clima.name}, {clima.sys?.country}
           </h2>
+
+          {clima.weather?.[0]?.icon && (
+            <img
+              src={`https://openweathermap.org/img/wn/${clima.weather[0].icon}@2x.png`}
+              alt={clima.weather[0].description}
+              className="mx-auto w-24 h-24"
+            />
+          )}
+
           <p className="text-5xl font-black text-blue-600 my-4">
             {Math.round(clima.main?.temp)}°C
           </p>
