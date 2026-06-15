@@ -133,11 +133,13 @@ function App() {
           </h2>
 
           {clima.weather?.[0]?.icon && (
-            <img
-              src={`https://openweathermap.org/img/wn/${clima.weather[0].icon}@2x.png`}
-              alt={clima.weather[0].description}
-              className="mx-auto w-24 h-24 drop-shadow-md" // drop-shadow dá relevo ao ícone
-            />
+            <div className="w-24 h-24 mx-auto my-2 flex items-center justify-center bg-white/20 p-2">
+              <img
+                src={`https://openweathermap.org/img/wn/${clima.weather[0].icon}@2x.png`}
+                alt={clima.weather[0].description}
+                className="w-16 h-16 object-contain drop-shadow-md"
+              />
+            </div>
           )}
 
           <p className="text-5xl font-black text-blue-600 my-4 dropdown-shadow-sm">
@@ -147,7 +149,6 @@ function App() {
             {clima.weather?.[0]?.description}
           </p>
 
-          {/* Mudamos a borda divisória para combinar com o vidro */}
           <div className="flex justify-around mt-6 pt-4 border-t border-white/30 text-sm text-slate-600">
             <div>
               <p className="font-bold text-slate-800">
