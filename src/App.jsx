@@ -64,24 +64,26 @@ function App() {
     }
   }, []);
 
-  let fundoDinamico = "bg-gradient-to-br from-slate-100 to-blue-50";
+  let fundoDinamico = "bg-gradient-to-b from-slate-200 to-blue-100";
   let corDoTitulo = "text-slate-800";
 
   if (clima) {
     const temp = clima.main?.temp;
 
     if (temp <= 16) {
-      fundoDinamico = "bg-gradient-to-br from-slate-700 to-slate-900";
+      fundoDinamico =
+        "bg-gradient-to-b from-slate-800 via-indigo-950 to-slate-900";
       corDoTitulo = "text-white";
     } else if (temp > 16 && temp <= 24) {
-      fundoDinamico =
-        "bg-gradient-to-br from-slate-200 via-slate-100 to-blue-100";
+      fundoDinamico = "bg-gradient-to-b from-sky-200 via-slate-100 to-blue-200";
       corDoTitulo = "text-slate-800";
     } else {
-      fundoDinamico = "bg-gradient-to-br from-orange-50 to-amber-100";
+      fundoDinamico =
+        "bg-gradient-to-b from-orange-200 via-amber-100 to-yellow-100";
       corDoTitulo = "text-slate-800";
     }
   }
+
   return (
     <div
       className={`min-h-screen ${fundoDinamico} flex flex-col items-center justify-center p-6 font-sans transition-all duration-500`}
@@ -94,7 +96,7 @@ function App() {
 
       <form
         onSubmit={lidarComBusca}
-        className="w-full max-w-md bg-white p-6 rounded-2xl shadow-md flex gap-3 mb-6"
+        className="w-full max-w-md bg-white/40 backdrop-blur-md border border-white/20 p-6 rounded-2xl shadow-lg flex gap-3 mb-6"
       >
         <input
           type="text"
@@ -125,7 +127,7 @@ function App() {
       )}
 
       {clima && (
-        <div className="w-full max-w-md bg-white p-6 rounded-2xl shadow-md text-center">
+        <div className="w-full max-w-md bg-white/30 backdrop-blur-md border border-white/20 p-6 rounded-3xl shadow-xl text-center transition-all">
           <h2 className="text-2xl font-bold text-slate-800">
             {clima.name}, {clima.sys?.country}
           </h2>
@@ -134,28 +136,30 @@ function App() {
             <img
               src={`https://openweathermap.org/img/wn/${clima.weather[0].icon}@2x.png`}
               alt={clima.weather[0].description}
-              className="mx-auto w-24 h-24"
+              className="mx-auto w-24 h-24 drop-shadow-md" // drop-shadow dá relevo ao ícone
             />
           )}
 
-          <p className="text-5xl font-black text-blue-600 my-4">
+          <p className="text-5xl font-black text-blue-600 my-4 dropdown-shadow-sm">
             {Math.round(clima.main?.temp)}°C
           </p>
-          <p className="text-slate-600 capitalize font-medium">
+          <p className="text-slate-700 capitalize font-semibold mb-2">
             {clima.weather?.[0]?.description}
           </p>
-          <div className="flex justify-around mt-6 pt-4 border-t border-slate-100 text-sm text-slate-500">
+
+          {/* Mudamos a borda divisória para combinar com o vidro */}
+          <div className="flex justify-around mt-6 pt-4 border-t border-white/30 text-sm text-slate-600">
             <div>
-              <p className="font-semibold text-slate-700">
+              <p className="font-bold text-slate-800">
                 {clima.main?.humidity}%
               </p>
-              <p>Umidade</p>
+              <p className="font-medium">Umidade</p>
             </div>
             <div>
-              <p className="font-semibold text-slate-700">
+              <p className="font-bold text-slate-700">
                 {clima.wind?.speed} km/h
               </p>
-              <p>Vento</p>
+              <p className="font-medium">Vento</p>
             </div>
           </div>
         </div>
